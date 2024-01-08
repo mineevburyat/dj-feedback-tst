@@ -57,7 +57,12 @@ def validate_username(request):
 
 def contact_form(request):
     form = ContactForm()
-    if request.method == "POST" and request.is_ajax():
+    
+    if request.method == "POST":
+        is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+        if not is_ajax:
+            print('not ajax requests!')
+            return render(request, "contact.html", {"form": form})
         form = ContactForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
